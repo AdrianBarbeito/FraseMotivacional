@@ -9,9 +9,14 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import institute.immune.frasemotivacional.Class.MyOpenHelper;
+import institute.immune.frasemotivacional.Class.Usuario;
 import institute.immune.frasemotivacional.R;
 
 public class MainActivity extends AppCompatActivity {
+    MyOpenHelper db;
+    Usuario usuario;
+
     EditText nombreInput;
     ImageButton registrarBt;
 
@@ -22,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
         bindings();
         setListeners();
+        /* Si realizo un Intent el resto del programa se ejecuta?
+        if (usuario.getId_usuario() != -1){
+            startActivity(new Intent(this, EstadoActivity.class));
+        }*/
     }
 
     private void bindings() {
@@ -50,7 +59,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), EstadoActivity.class);
-            intent.putExtra("nombre", nombreInput.getText().toString());
+            usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));
+
+            if (usuario.getId_usuario() == -1){
+                db.crearUsuario(nombreInput.getText().toString());
+                usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));
+            }
             startActivity(intent);
         }
     };

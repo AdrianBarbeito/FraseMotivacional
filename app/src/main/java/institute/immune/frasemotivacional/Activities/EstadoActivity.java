@@ -9,9 +9,12 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import institute.immune.frasemotivacional.Class.Usuario;
 import institute.immune.frasemotivacional.R;
 
 public class EstadoActivity extends AppCompatActivity {
+    Usuario usuario;
+
     ImageButton logOutBT, fotoBt;
     TextView tituloEstado;
     Spinner estadosAnimo;
@@ -23,6 +26,7 @@ public class EstadoActivity extends AppCompatActivity {
 
         bindings();
         setListeners();
+        setTitulo();
     }
 
     private void bindings() {
@@ -30,6 +34,10 @@ public class EstadoActivity extends AppCompatActivity {
 
     private void setListeners() {
         logOutBT.setOnClickListener(logOutListener);
+    }
+
+    private void setTitulo() {
+        tituloEstado.setText(R.string.hola + usuario.getNombre());
     }
 
     public View.OnClickListener logOutListener = new View.OnClickListener() {

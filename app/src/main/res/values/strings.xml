@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FraseMotivacional</string>
+    <string name="errorInput">Por favor, introduce el nombre</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,7 +16,7 @@ import institute.immune.frasemotivacional.R;
 public class EstadoActivity extends AppCompatActivity {
     Usuario usuario;
 
-    ImageButton logOutBT, fotoBt;
+    Button logOutBT, fotoBt;
     TextView tituloEstado;
     Spinner estadosAnimo;
 
@@ -30,6 +31,7 @@ public class EstadoActivity extends AppCompatActivity {
     }
 
     private void bindings() {
+        logOutBT = findViewById(R.id.backToLoginBT);
     }
 
     private void setListeners() {

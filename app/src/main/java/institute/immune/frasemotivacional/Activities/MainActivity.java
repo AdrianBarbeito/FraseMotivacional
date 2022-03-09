@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
         bindings();
         setListeners();
@@ -34,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindings() {
-
+        registrarBt = findViewById(R.id.imageButton);
     }
 
     private void setListeners() {
-        nombreInput.setOnKeyListener(inputListener);
+        //nombreInput.setOnKeyListener(inputListener);
         registrarBt.setOnClickListener(registrarListener);
     }
 
@@ -59,12 +59,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), EstadoActivity.class);
-            usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));
-
-            if (usuario.getId_usuario() == -1){
-                db.crearUsuario(nombreInput.getText().toString());
-                usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));
-            }
+            /*usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));*/
             startActivity(intent);
         }
     };

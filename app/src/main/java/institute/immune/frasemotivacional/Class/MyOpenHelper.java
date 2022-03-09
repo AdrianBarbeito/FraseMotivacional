@@ -22,9 +22,9 @@ public class MyOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(scriptUsuario);
+        /*sqLiteDatabase.execSQL(scriptUsuario);
         sqLiteDatabase.execSQL(scriptEstado);
-        sqLiteDatabase.execSQL(scriptFrase);
+        sqLiteDatabase.execSQL(scriptFrase);*/
     }
 
     @Override
@@ -35,11 +35,11 @@ public class MyOpenHelper extends SQLiteOpenHelper{
     public void crearUsuario(String nombre) {
     }
 
-    public Integer findByName(String nombre) {
+    /*public Integer findByName(String nombre) {
         if (){
 
         } else {
             return -1;
         }
-    }
+    }*/
 }

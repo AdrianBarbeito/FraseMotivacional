@@ -6,8 +6,10 @@
         <entry key="app/src/main/res/drawable/boton_login.xml" value="0.2975" />
         <entry key="app/src/main/res/drawable/input_login.xml" value="0.2975" />
         <entry key="app/src/main/res/layout/activity_estado.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.178125" />
+        <entry key="app/src/main/res/layout/camera_estado.xml" value="0.178125" />
         <entry key="app/src/main/res/layout/estados.xml" value="0.2760416666666667" />
-        <entry key="app/src/main/res/layout/login.xml" value="0.35104166666666664" />
+        <entry key="app/src/main/res/layout/login.xml" value="0.178125" />
       </map>
     </option>
   </component>

@@ -34,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindings() {
+
         registrarBt = findViewById(R.id.imageButton);
+        nombreInput = findViewById(R.id.editTextTextPersonName);
     }
 
     private void setListeners() {
-        //nombreInput.setOnKeyListener(inputListener);
+        nombreInput.setOnKeyListener(inputListener);
         registrarBt.setOnClickListener(registrarListener);
     }
 
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), EstadoActivity.class);
-            /*usuario.setId_usuario(db.findByName(nombreInput.getText().toString()));*/
+            //user.setId_usuario(db.findByName(nombreInput.getText().toString()));
             startActivity(intent);
         }
     };

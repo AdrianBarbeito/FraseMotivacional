@@ -18,7 +18,7 @@ public class EstadoActivity extends AppCompatActivity {
 
     Button logOutBT, fotoBt;
     TextView tituloEstado;
-    Spinner estadosAnimo;
+    Spinner estadosanimo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +32,13 @@ public class EstadoActivity extends AppCompatActivity {
 
     private void bindings() {
         logOutBT = findViewById(R.id.backToLoginBT);
+        tituloEstado = findViewById(R.id.textNombre);
     }
 
     private void setListeners() {
         logOutBT.setOnClickListener(logOutListener);
     }
-
     private void setTitulo() {
-        tituloEstado.setText(R.string.hola + usuario.getNombre());
     }
 
     public View.OnClickListener logOutListener = new View.OnClickListener() {

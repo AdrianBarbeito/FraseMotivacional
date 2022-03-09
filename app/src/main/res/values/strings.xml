@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">FraseMotivacional</string>
-    <string name="errorInput">Por favor, introduce el nombre</string>
+    <string name="errorInput">Please insert your name</string>
     <string name="hola">"Hola "</string>
+    <string name="take_photo">Take photo</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="welcome">Welcome!</string>
+    <string name="name">Name</string>
+    <string name="login">Login</string>
 </resources>

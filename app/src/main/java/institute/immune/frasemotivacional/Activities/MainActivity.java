@@ -15,7 +15,7 @@ import institute.immune.frasemotivacional.R;
 
 public class MainActivity extends AppCompatActivity {
     MyOpenHelper db;
-    Usuario usuario;
+    Usuario user;
 
     EditText nombreInput;
     ImageButton registrarBt;

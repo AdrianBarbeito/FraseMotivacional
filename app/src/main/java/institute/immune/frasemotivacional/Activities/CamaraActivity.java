@@ -14,4 +14,6 @@ public class CamaraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera_estado);
     }
+
+
 }

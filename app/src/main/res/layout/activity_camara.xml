@@ -8,12 +8,44 @@
 
     <ImageView
         android:id="@+id/ImageViewFoto"
-        android:layout_width="356dp"
-        android:layout_height="450dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="56dp"
-        android:rotation="90"
+        android:layout_width="357dp"
+        android:layout_height="341dp"
+        android:layout_marginTop="208dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/input_login" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="127dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="186dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="39dp"
+        android:layout_marginEnd="28dp"
+        android:fontFamily="@font/amiko_bold"
+        android:text="Frase motivacional"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ImageViewFoto" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

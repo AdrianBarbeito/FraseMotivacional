@@ -19,6 +19,8 @@
         <activity
             android:name=".Activities.EstadoActivity"
             android:exported="false" />
+        <activity android:name=".Activities.CamaraActivity"
+            android:exported="false"/>
         <activity
             android:name=".Activities.MainActivity"
             android:exported="true">

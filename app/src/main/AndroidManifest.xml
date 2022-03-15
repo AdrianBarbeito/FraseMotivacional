@@ -15,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
+        <activity
+            android:name=".Activities.ShowBDActivity"
+            android:exported="false" />
         <activity
             android:name=".Activities.EstadoActivity"
             android:exported="false" />

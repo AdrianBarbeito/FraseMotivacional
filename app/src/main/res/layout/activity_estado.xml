@@ -12,7 +12,12 @@
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"
         android:layout_marginBottom="120dp"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/botonCamara"
@@ -44,7 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="25dp"
         android:layout_marginStart="25dp"
-        android:textColor="#FFFFFF"
-        android:text="@string/welcome" />
+        android:textColor="#FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

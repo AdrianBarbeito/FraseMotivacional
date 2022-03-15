@@ -1,19 +1,31 @@
 package institute.immune.frasemotivacional.Class;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import institute.immune.frasemotivacional.Activities.MainActivity;
+import institute.immune.frasemotivacional.R;
 
 public class MyOpenHelper extends SQLiteOpenHelper{
 
     private SQLiteDatabase db;
-    private static final String scriptUsuario = "CREATE TABLE user (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, id_estado INTEGER)";
-    //Poner en el estado AUTOINCREMENT para q se empareje con el del usuario?
-    private static final String scriptEstado = "CREATE TABLE estado (id_estado INTEGER PRIMARY KEY AUTOINCREMENT, estado TEXT)";
-    //Como enlazar las FOREIGN KEY y si hay tipo DATE en SQLite?
-    private static final String scriptFrase = "CREATE TABLE frase (id_frase INTEGER PRIMARY KEY, frase TEXT NOT NULL, id_estado INTEGER NOT NULL, fecha_uso)";
+    private static final String scriptUsuario = "CREATE TABLE usuario (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, id_estado INTEGER, inicio_sesion INTEGER NOT NULL, FOREIGN KEY (id_estado) REFERENCES estado (id_estado))";
+    private static final String scriptEstado = "CREATE TABLE estado (id_estado INTEGER PRIMARY KEY AUTOINCREMENT, estado TEXT NOT NULL)";
+    private static final String scriptFrase = "CREATE TABLE frase (id_frase INTEGER PRIMARY KEY AUTOINCREMENT, frase TEXT NOT NULL, id_estado INTEGER NOT NULL, fecha_uso TEXT, FOREIGN KEY (id_estado) REFERENCES estado (id_estado))";
 
     public MyOpenHelper (Context context) {
         super(context, "FraseMotivacionalDB.SQLite", null, 1);
@@ -22,9 +34,10 @@ public class MyOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        /*sqLiteDatabase.execSQL(scriptUsuario);
         sqLiteDatabase.execSQL(scriptEstado);
-        sqLiteDatabase.execSQL(scriptFrase);*/
+        sqLiteDatabase.execSQL(scriptUsuario);
+        sqLiteDatabase.execSQL(scriptFrase);
+
     }
 
     @Override
@@ -32,14 +45,220 @@ public class MyOpenHelper extends SQLiteOpenHelper{
 
     }
 
-    public void crearUsuario(String nombre) {
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
-    /*public Integer findByName(String nombre) {
-        if (){
+    @SuppressLint("Range")
+    public Usuario crearUsuario(String nombre) {
+        ContentValues cv = new ContentValues();
 
-        } else {
-            return -1;
+        cv.put("nombre", nombre);
+        cv.put("inicio_sesion", 0);
+        db.insert("usuario", null, cv);
+
+        String[] args = new String[]{
+                nombre
+        };
+        Cursor cursor = db.rawQuery("SELECT * FROM usuario WHERE nombre = ?", args);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") Usuario usuario = new Usuario(cursor.getInt(cursor.getColumnIndex("id_usuario")),
+                    cursor.getString(cursor.getColumnIndex("nombre")),
+                    cursor.getInt(cursor.getColumnIndex("id_estado")),
+                    cursor.getInt(cursor.getColumnIndex("inicio_sesion")));
+            cursor.close();
+            return usuario;
+        }else{
+            return null;
         }
-    }*/
+    }
+
+
+    @SuppressLint("Range")
+    public Usuario searchByNombre(String nombre){
+        String[] args = new String[]{
+                nombre
+        };
+        Cursor cursor = db.rawQuery("SELECT * FROM usuario WHERE nombre = ?", args);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") Usuario usuario = new Usuario(cursor.getInt(cursor.getColumnIndex("id_usuario")),
+                    cursor.getString(cursor.getColumnIndex("nombre")),
+                    cursor.getInt(cursor.getColumnIndex("id_estado")),
+                    cursor.getInt(cursor.getColumnIndex("inicio_sesion")));
+            cursor.close();
+
+            return usuario;
+        }else{
+            return null;
+        }
+    }
+
+    @SuppressLint("Range")
+    public Usuario getInicioSesion(){
+        Cursor cursor = db.rawQuery("SELECT * FROM usuario WHERE inicio_sesion = 1", null);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") Usuario usuario = new Usuario(cursor.getInt(cursor.getColumnIndex("id_usuario")),
+                    cursor.getString(cursor.getColumnIndex("nombre")),
+                    cursor.getInt(cursor.getColumnIndex("id_estado")),
+                    cursor.getInt(cursor.getColumnIndex("inicio_sesion")));
+            cursor.close();
+
+            return usuario;
+        }else{
+            return null;
+        }
+    }
+
+    public void setInicioSesion(Integer id, boolean activo){
+        ContentValues cv = new ContentValues();
+        String[] args = new String[]{
+                String.valueOf(id)
+        };
+
+        if (activo){
+            cv.put("inicio_sesion", 1);
+        }else{
+            cv.put("inicio_sesion", 0);
+        }
+
+        db.update("usuario", cv, "id_usuario = ?", args);
+    }
+
+    public void setFalseIS(){
+        ContentValues cv = new ContentValues();
+        cv.put("inicio_sesion", 0);
+
+        db.update("usuario", cv, null, null);
+    }
+
+    public ArrayList<Estado> getMoods(){
+        ArrayList<Estado> moodList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM estado", null);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            do {
+                @SuppressLint("Range") Estado estado = new Estado(cursor.getInt(cursor.getColumnIndex("id_estado")),
+                        cursor.getString(cursor.getColumnIndex("estado")));
+
+                moodList.add(estado);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return moodList;
+    }
+
+    public void bufferReader(InputStream is) throws IOException, JSONException {
+        //Necesito crearla aqui por q si no cada vez q cargue la pagina de login va a cargar la base de datos
+        //MainActivity mainActivity = new MainActivity();
+        //InputStream is = mainActivity.getResources().openRawResource(R.raw.json_database);
+        if (showEstados() == null || showFrases() == null){
+            InputStreamReader streamReader = new InputStreamReader(is);
+            BufferedReader rd = new BufferedReader(streamReader);
+            String line;
+            while ((line = rd.readLine()) != null) {
+                createDb(line);
+            }
+        }
+    }
+
+
+    private void createDb(String line) throws JSONException {
+        ContentValues cv = new ContentValues();
+        JSONObject json = new JSONObject(line);
+        JSONObject database = json.getJSONObject("dataBase");
+
+        JSONArray jsonArray = database.getJSONArray("estados");
+        for (int var = 0; var <= (jsonArray.length() -1); var++){
+            JSONObject linea = jsonArray.getJSONObject(var);
+            cv.put("estado", linea.getString("estado"));
+            db.insert("estado", null, cv);
+            cv.clear();
+        }
+
+        jsonArray = database.getJSONArray("frases");
+        for (int var = 0; var <= (jsonArray.length() -1); var++){
+            JSONObject linea = jsonArray.getJSONObject(var);
+            cv.put("frase", linea.getString("frase"));
+            cv.put("id_estado", linea.getString("id_estado"));
+            db.insert("frase", null, cv);
+            cv.clear();
+        }
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Frase> showFrases(){
+        ArrayList<Frase> fraseList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM frase", null);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            do {
+                Frase frase = new Frase(cursor.getInt(cursor.getColumnIndex("id_frase")),
+                        cursor.getString(cursor.getColumnIndex("frase")),
+                        cursor.getInt(cursor.getColumnIndex("id_estado")),
+                        cursor.getString(cursor.getColumnIndex("fecha_uso")));
+                fraseList.add(frase);
+
+            } while (cursor.moveToNext());
+            cursor.close();
+
+            return fraseList;
+
+        } else{
+            return null;
+        }
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Estado> showEstados(){
+        ArrayList<Estado> estadoList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM estado", null);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            do {
+                Estado estado = new Estado(cursor.getInt(cursor.getColumnIndex("id_estado")),
+                        cursor.getString(cursor.getColumnIndex("estado")));
+                estadoList.add(estado);
+
+            } while (cursor.moveToNext());
+            cursor.close();
+
+            return estadoList;
+
+        } else{
+            return null;
+        }
+
+
+
+
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Usuario> showUsuarios(){
+        ArrayList<Usuario> userList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM usuario", null);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            do {
+                Usuario user = new Usuario(cursor.getInt(cursor.getColumnIndex("id_usuario")),
+                        cursor.getString(cursor.getColumnIndex("nombre")),
+                        cursor.getInt(cursor.getColumnIndex("id_estado")),
+                        cursor.getInt(cursor.getColumnIndex("inicio_sesion")));
+                userList.add(user);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return userList;
+    }
 }

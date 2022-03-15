@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -15,51 +16,94 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+
+import institute.immune.frasemotivacional.Class.Estado;
+import institute.immune.frasemotivacional.Class.MyOpenHelper;
+import institute.immune.frasemotivacional.Class.SpinAdapter;
 import institute.immune.frasemotivacional.Class.Usuario;
 import institute.immune.frasemotivacional.R;
 
 public class EstadoActivity extends AppCompatActivity {
+    private MyOpenHelper db;
 
-    private Button logOutBT, fotoBt, camera;
+    private Button logOutBT, camaraBt;
     private TextView tituloEstado;
-    private Spinner estadosanimo;
+    private Spinner estadosAnimo;
+
+    private Usuario usuario;
+    private SpinAdapter adapter;
+    private ArrayList<Estado> estadoList;
     private File fichero;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estado);
 
         bindings();
-        setListeners();
         setTitulo();
+        createSpinner();
+        setListeners();
     }
 
     private void bindings() {
-        logOutBT = findViewById(R.id.backToLoginBT);
+        db = new MyOpenHelper(this);
+
         tituloEstado = findViewById(R.id.textNombre);
-        camera = findViewById(R.id.botonCamara);
+        logOutBT = findViewById(R.id.backToLoginBT);
+        estadosAnimo = findViewById(R.id.spinner);
+        camaraBt = findViewById(R.id.botonCamara);
+
+        usuario = db.getInicioSesion();
+        estadoList = db.getMoods();
     }
 
     private void setListeners() {
         logOutBT.setOnClickListener(logOutListener);
-        camera.setOnClickListener(getCameraListener);
+        camaraBt.setOnClickListener(getCameraListener);
     }
+
     private void setTitulo() {
+        tituloEstado.setText("Welcome" + " " + usuario.getNombre());
     }
+
+    private void createSpinner() {
+        adapter = new SpinAdapter(this, android.R.layout.simple_spinner_item, estadoList);
+
+        estadosAnimo.setAdapter(adapter);
+
+        estadosAnimo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                estadosAnimo.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public View.OnClickListener logOutListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            db.setInicioSesion(usuario.getId_usuario(), false);
+            startActivity(new Intent(view.getContext(), MainActivity.class));
+        }
+    };
+
 
 
     public View.OnClickListener getCameraListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, 1);
-        }
-    };
 
-    public View.OnClickListener logOutListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(view.getContext(), MainActivity.class));
+            startActivityForResult(intent, 1);
         }
     };
 
@@ -71,7 +115,6 @@ public class EstadoActivity extends AppCompatActivity {
             Intent intent = new Intent(this, CamaraActivity.class);
             intent.putExtra("image", extra);
             startActivity(intent);
-
         }
         else{
             System.out.println("error");

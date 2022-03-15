@@ -10,16 +10,23 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import institute.immune.frasemotivacional.Class.MyOpenHelper;
 import institute.immune.frasemotivacional.Class.Usuario;
 import institute.immune.frasemotivacional.R;
 
 public class MainActivity extends AppCompatActivity {
-    MyOpenHelper db;
-    Usuario user;
+    private MyOpenHelper db;
 
-    EditText nombreInput;
-    Button registrarBt;
+    private EditText nombreInput;
+    private ImageButton registrarBt;
+
+    private Button showUsuarios, showEstados, showFrases;
+
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,21 +35,37 @@ public class MainActivity extends AppCompatActivity {
 
         bindings();
         setListeners();
-        /* Si realizo un Intent el resto del programa se ejecuta?
-        if (usuario.getId_usuario() != -1){
+        if (db.getInicioSesion() != null){
             startActivity(new Intent(this, EstadoActivity.class));
-        }*/
+        }
+        if (nombreInput.getText().toString().equals("")){
+            registrarBt.setEnabled(false);
+        }
     }
 
     private void bindings() {
+        db = new MyOpenHelper(this);
+        try {
+            db.bufferReader(getResources().openRawResource(R.raw.json_database));
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
 
-        registrarBt = findViewById(R.id.imageButton);
-        nombreInput = findViewById(R.id.editTextTextPersonName);
+        nombreInput = findViewById(R.id.nombreInput);
+        registrarBt = findViewById(R.id.logInBt);
+
+        showUsuarios = findViewById(R.id.showUsuarios);
+        showEstados = findViewById(R.id.showEstados);
+        showFrases = findViewById(R.id.showFrases);
     }
 
     private void setListeners() {
         nombreInput.setOnKeyListener(inputListener);
         registrarBt.setOnClickListener(registrarListener);
+
+        showUsuarios.setOnClickListener(BDListener);
+        showEstados.setOnClickListener(BDListener);
+        showFrases.setOnClickListener(BDListener);
     }
 
     public View.OnKeyListener inputListener = new View.OnKeyListener() {
@@ -50,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
             if (!nombreInput.getText().toString().equals("")) {
                 registrarBt.setEnabled(true);
+                registrarBt.setTooltipText(String.valueOf(R.string.accesoCorrecto));
             } else {
                 registrarBt.setEnabled(false);
                 registrarBt.setTooltipText(String.valueOf(R.string.errorInput));
@@ -61,8 +85,37 @@ public class MainActivity extends AppCompatActivity {
     public View.OnClickListener registrarListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), EstadoActivity.class);
-            //user.setId_usuario(db.findByName(nombreInput.getText().toString()));
+
+            usuario = db.searchByNombre(nombreInput.getText().toString());
+            if (usuario == null){
+                usuario = db.crearUsuario(nombreInput.getText().toString());
+            }
+            db.setFalseIS();
+            db.setInicioSesion(usuario.getId_usuario(), true);
+
+            startActivity(new Intent(view.getContext(), EstadoActivity.class));
+        }
+    };
+
+
+    public View.OnClickListener BDListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), ShowBDActivity.class);
+            switch (view.getId()){
+
+                case R.id.showUsuarios:
+                    intent.putExtra("show", "usuarios");
+                    break;
+
+                case R.id.showEstados:
+                    intent.putExtra("show", "estados");
+                    break;
+
+                case R.id.showFrases:
+                    intent.putExtra("show", "frases");
+                    break;
+            }
             startActivity(intent);
         }
     };

@@ -25,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText nombreInput;
     private ImageButton registrarBt;
 
-    private Button showUsuarios, showEstados, showFrases;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,19 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         nombreInput = findViewById(R.id.nombreInput);
         registrarBt = findViewById(R.id.logInBt);
-
-        showUsuarios = findViewById(R.id.showUsuarios);
-        showEstados = findViewById(R.id.showEstados);
-        showFrases = findViewById(R.id.showFrases);
     }
 
     private void setListeners() {
         nombreInput.setOnKeyListener(inputListener);
         registrarBt.setOnClickListener(registrarListener);
-
-        showUsuarios.setOnClickListener(BDListener);
-        showEstados.setOnClickListener(BDListener);
-        showFrases.setOnClickListener(BDListener);
     }
 
     public View.OnKeyListener inputListener = new View.OnKeyListener() {
@@ -94,29 +83,6 @@ public class MainActivity extends AppCompatActivity {
             db.setInicioSesion(usuario.getId_usuario(), true);
 
             startActivity(new Intent(view.getContext(), EstadoActivity.class));
-        }
-    };
-
-
-    public View.OnClickListener BDListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ShowBDActivity.class);
-            switch (view.getId()){
-
-                case R.id.showUsuarios:
-                    intent.putExtra("show", "usuarios");
-                    break;
-
-                case R.id.showEstados:
-                    intent.putExtra("show", "estados");
-                    break;
-
-                case R.id.showFrases:
-                    intent.putExtra("show", "frases");
-                    break;
-            }
-            startActivity(intent);
         }
     };
 }

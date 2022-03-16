@@ -36,7 +36,6 @@ public class MyOpenHelper extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL(scriptEstado);
         sqLiteDatabase.execSQL(scriptUsuario);
         sqLiteDatabase.execSQL(scriptFrase);
-
     }
 
     @Override
@@ -160,7 +159,7 @@ public class MyOpenHelper extends SQLiteOpenHelper{
         String[] id = new String[]{
                 String.valueOf(id_estado)
         };
-        Cursor cursor = db.rawQuery("SELECT * FROM frase WHERE date(fecha_uso) >= date('0000/00/00 00:00:01') & id_estado = ? ORDER BY date(fecha_uso) DESC LIMIT 1", id);
+        Cursor cursor = db.rawQuery("SELECT * FROM frase WHERE id_estado = ? ORDER BY fecha_uso ASC LIMIT 1", id);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             @SuppressLint("Range") Frase frase = new Frase(cursor.getInt(cursor.getColumnIndex("id_frase")),
@@ -203,9 +202,6 @@ public class MyOpenHelper extends SQLiteOpenHelper{
     }
 
     public void bufferReader(InputStream is) throws IOException, JSONException {
-        //Necesito crearla aqui por q si no cada vez q cargue la pagina de login va a cargar la base de datos
-        //MainActivity mainActivity = new MainActivity();
-        //InputStream is = mainActivity.getResources().openRawResource(R.raw.json_database);
         if (showEstados() == null || showFrases() == null){
             InputStreamReader streamReader = new InputStreamReader(is);
             BufferedReader rd = new BufferedReader(streamReader);

@@ -81,31 +81,4 @@
         app:layout_constraintStart_toStartOf="@+id/logInBt"
         app:layout_constraintTop_toTopOf="@+id/logInBt" />
 
-    <Button
-        android:id="@+id/showUsuarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/showEstados"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="showUsuarios"/>
-
-    <Button
-        android:id="@+id/showEstados"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/showUsuarios"
-        app:layout_constraintEnd_toStartOf="@id/showFrases"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="showEstados"/>
-
-    <Button
-        android:id="@+id/showFrases"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/showEstados"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="showFrases"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

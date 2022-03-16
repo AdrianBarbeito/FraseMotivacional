@@ -15,10 +15,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import institute.immune.frasemotivacional.Activities.MainActivity;
-import institute.immune.frasemotivacional.R;
 
 public class MyOpenHelper extends SQLiteOpenHelper{
 
@@ -99,6 +98,25 @@ public class MyOpenHelper extends SQLiteOpenHelper{
     }
 
     @SuppressLint("Range")
+    public Estado searchByIdEstado(Integer id){
+        String[] args = new String[]{
+                id.toString()
+        };
+        Cursor cursor = db.rawQuery("SELECT * FROM estado WHERE id_estado = ?", args);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") Estado estado = new Estado(cursor.getInt(cursor.getColumnIndex("id_estado")),
+                    cursor.getString(cursor.getColumnIndex("estado")));
+            cursor.close();
+
+            return estado;
+        }else{
+            return null;
+        }
+    }
+
+    @SuppressLint("Range")
     public Usuario getInicioSesion(){
         Cursor cursor = db.rawQuery("SELECT * FROM usuario WHERE inicio_sesion = 1", null);
         if (cursor.getCount() > 0){
@@ -138,6 +156,34 @@ public class MyOpenHelper extends SQLiteOpenHelper{
         db.update("usuario", cv, null, null);
     }
 
+    public Frase getFraseSetDate(Integer id_estado){
+        String[] id = new String[]{
+                String.valueOf(id_estado)
+        };
+        Cursor cursor = db.rawQuery("SELECT * FROM frase WHERE date(fecha_uso) >= date('0000/00/00 00:00:01') & id_estado = ? ORDER BY date(fecha_uso) DESC LIMIT 1", id);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") Frase frase = new Frase(cursor.getInt(cursor.getColumnIndex("id_frase")),
+                    cursor.getString(cursor.getColumnIndex("frase")),
+                    cursor.getInt(cursor.getColumnIndex("id_estado")),
+                    cursor.getString(cursor.getColumnIndex("fecha_uso")));
+
+            cursor.close();
+
+            ContentValues cv = new ContentValues();
+            String[] args = new String[]{
+                    String.valueOf(frase.getId_frase())
+            };
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            cv.put("fecha_uso", formatter.format(LocalDateTime.now()));
+            db.update("frase", cv, "id_frase = ?", args);
+
+            return frase;
+        } else{
+            return null;
+        }
+    }
+
     public ArrayList<Estado> getMoods(){
         ArrayList<Estado> moodList = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM estado", null);
@@ -172,6 +218,7 @@ public class MyOpenHelper extends SQLiteOpenHelper{
 
 
     private void createDb(String line) throws JSONException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         ContentValues cv = new ContentValues();
         JSONObject json = new JSONObject(line);
         JSONObject database = json.getJSONObject("dataBase");
@@ -189,6 +236,7 @@ public class MyOpenHelper extends SQLiteOpenHelper{
             JSONObject linea = jsonArray.getJSONObject(var);
             cv.put("frase", linea.getString("frase"));
             cv.put("id_estado", linea.getString("id_estado"));
+            cv.put("fecha_uso", formatter.format(LocalDateTime.now()));
             db.insert("frase", null, cv);
             cv.clear();
         }
@@ -236,10 +284,6 @@ public class MyOpenHelper extends SQLiteOpenHelper{
         } else{
             return null;
         }
-
-
-
-
     }
 
     @SuppressLint("Range")

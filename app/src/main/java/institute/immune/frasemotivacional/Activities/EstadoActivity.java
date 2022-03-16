@@ -1,20 +1,13 @@
 package institute.immune.frasemotivacional.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.io.File;
-import java.io.IOException;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,15 +21,15 @@ import institute.immune.frasemotivacional.R;
 
 public class EstadoActivity extends AppCompatActivity {
     private MyOpenHelper db;
+    private Usuario usuario;
+    private SpinAdapter adapter;
+    private ArrayList<Estado> estadoList;
+    private Estado estadoSelected;
 
     private Button logOutBT, camaraBt;
     private TextView tituloEstado;
     private Spinner estadosAnimo;
 
-    private Usuario usuario;
-    private SpinAdapter adapter;
-    private ArrayList<Estado> estadoList;
-    private File fichero;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +71,13 @@ public class EstadoActivity extends AppCompatActivity {
         estadosAnimo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                estadosAnimo.getItemAtPosition(position);
+                estadoSelected = adapter.getItem(position);
+                //camaraBt.setEnabled(true);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                //camaraBt.setEnabled(false);
             }
         });
     }
@@ -95,7 +89,6 @@ public class EstadoActivity extends AppCompatActivity {
             startActivity(new Intent(view.getContext(), MainActivity.class));
         }
     };
-
 
 
     public View.OnClickListener getCameraListener = new View.OnClickListener() {
@@ -114,11 +107,8 @@ public class EstadoActivity extends AppCompatActivity {
             extra.get("data");
             Intent intent = new Intent(this, CamaraActivity.class);
             intent.putExtra("image", extra);
+            intent.putExtra("id_estado", estadoSelected.getId_estado());
             startActivity(intent);
         }
-        else{
-            System.out.println("error");
-        }
-
     }
 }

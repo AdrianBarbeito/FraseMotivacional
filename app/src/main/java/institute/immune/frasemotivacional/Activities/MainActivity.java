@@ -20,13 +20,13 @@ import institute.immune.frasemotivacional.R;
 
 public class MainActivity extends AppCompatActivity {
     private MyOpenHelper db;
+    private Usuario usuario;
 
     private EditText nombreInput;
     private ImageButton registrarBt;
 
     private Button showUsuarios, showEstados, showFrases;
 
-    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

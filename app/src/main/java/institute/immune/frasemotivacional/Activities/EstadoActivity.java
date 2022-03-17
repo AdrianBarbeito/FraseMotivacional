@@ -1,5 +1,6 @@
 package institute.immune.frasemotivacional.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -86,7 +87,7 @@ public class EstadoActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             db.setInicioSesion(usuario.getId_usuario(), false);
-            startActivity(new Intent(view.getContext(), MainActivity.class));
+            finish();
         }
     };
 

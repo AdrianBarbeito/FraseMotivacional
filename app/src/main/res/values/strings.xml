@@ -11,4 +11,5 @@
     <string name="accesoCorrecto">"Join the aplication "</string>
     <string name="ttlSpinner">"Select your mood "</string>
     <string name="FraseMotivacional">"Frase Motivacional</string>
+    <string name="title">Frase Motivacional</string>
 </resources>
